@@ -131,3 +131,26 @@ That should be it!
 
 Since `conda` has so many performance issues, it's recommended to use `mamba` instead. I recommend installing the `miniforge` distribution. See here: https://github.com/conda-forge/miniforge
 
+
+# Task List
+
+- LaTeX document: Zhiyuan Liu, Junhan Fu
+- Jupyter notebook: Sifei Zhao, Ruilong Guo
+- Table 1: Sifei Zhao, Ruilong Guo
+    - Replicate
+    - Reproduce
+    - Unit tests
+    - .env, requirements.txt
+    - make commits to repo; pull requests
+    - docstring of python file and python function
+- Table 2: Zhiyuan Liu, Junhan Fu
+    - Replicate
+    - Reproduce
+    - Unit tests
+    - .env, requirements.txt
+    - make commits to repo; pull requests
+    - docstring of python file and python function
+  
+- Other summary statistics tables and charts outside replication: TBD
+- Tidy data set (data cleaning): TBD
+- PyDoit (dodo.py): TBD
