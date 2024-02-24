@@ -14,6 +14,7 @@ START_DATE = config.START_DATE
 END_DATE = config.END_DATE
 
 
+
 def pull_CRSP_daily_file(
     start_date=START_DATE, end_date=END_DATE, wrds_username=WRDS_USERNAME
 ):
@@ -34,8 +35,9 @@ def pull_CRSP_daily_file(
     query = f"""
     SELECT 
         date,
-        permno, permco, date, ret, retx, 
-        bid, ask, shrout, cfacpr, cfacshr,
+        dsf.permno, dsf.permco, exchcd, 
+        prc, bid, ask, shrout, cfacpr, cfacshr,
+        ret, retx
     FROM crsp.dsf AS dsf
     LEFT JOIN 
         crsp.msenames as msenames
@@ -45,7 +47,8 @@ def pull_CRSP_daily_file(
         dsf.date <= msenames.nameendt
     WHERE 
         dsf.date BETWEEN '{start_date}' AND '{end_date}' AND 
-        msenames.shrcd IN (10, 11)
+        msenames.shrcd IN (10, 11) AND
+        msenames.exchcd BETWEEN 1 AND 3
     """
     # with wrds.Connection(wrds_username=wrds_username) as db:
     #     df = db.raw_sql(
@@ -53,7 +56,7 @@ def pull_CRSP_daily_file(
     #     )
     db = wrds.Connection(wrds_username=wrds_username)
     df = db.raw_sql(
-        query, date_cols=["date", "namedt", "nameendt"]
+        query, date_cols=["date"]
     )
     db.close()
 
@@ -61,6 +64,13 @@ def pull_CRSP_daily_file(
     df["shrout"] = df["shrout"] * 1000
 
     return df
+
+def load_CRSP_daily_file(data_dir=DATA_DIR):
+    """
+    Load CRSP stock data from disk
+    """
+    path = Path(data_dir) / "pulled" / "CRSP_stock.parquet"
+    return pd.read_parquet(path)
 
 if __name__ == "__main__":
 

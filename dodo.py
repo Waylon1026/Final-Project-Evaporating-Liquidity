@@ -51,19 +51,31 @@ def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     return command
 
 
-def task_pull_fred():
-    """ """
-    file_dep = ["./src/load_fred.py"]
-    file_output = ["fred.parquet"]
-    targets = [DATA_DIR / "pulled" / file for file in file_output]
+def task_pull_CRSP_Stock():
+    """Pull CRSPdata from WRDS and save to disk
+    """
+    file_dep = [
+        "./src/config.py", 
+        "./src/load_CRSP_stock.py",
+        ]
+    targets = [
+        Path(DATA_DIR) / "pulled" / file for file in 
+        [
+            ## src/load_CRSP_stock.py
+            "CRSP_stock.parquet", 
+        ]
+    ]
 
     return {
         "actions": [
-            "ipython ./src/load_fred.py",
+            "ipython src/config.py",
+            "ipython src/load_CRSP_stock.py",
         ],
         "targets": targets,
         "file_dep": file_dep,
         "clean": True,
+        "verbosity": 2, # Print everything immediately. This is important in
+        # case WRDS asks for credentials.
     }
 
 
@@ -103,7 +115,7 @@ def task_pull_fred():
 #         "file_dep": file_dep,
 #     }
 
-
+"""
 def task_summary_stats():
     """ """
     file_dep = ["./src/example_table.py"]
@@ -207,7 +219,7 @@ def task_run_notebooks():
         "file_dep": file_dep,
         "clean": True,
     }
-
+"""
 
 # def task_knit_RMarkdown_files():
 #     """Preps the RMarkdown files for presentation format.
@@ -240,7 +252,7 @@ def task_run_notebooks():
 #         "file_dep": file_dep,
 #     }
 
-
+"""
 def task_compile_latex_docs():
     """Example plots"""
     file_dep = [
@@ -267,3 +279,4 @@ def task_compile_latex_docs():
         "file_dep": file_dep,
         "clean": True,
     }
+"""
