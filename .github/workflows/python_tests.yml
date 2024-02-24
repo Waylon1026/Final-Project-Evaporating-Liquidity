@@ -1,6 +1,20 @@
-name: Python application test
+name: Example Workflow
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello World
+        run: echo "Hello, World!"
+
+# name: Python application test
+
+# on: [push, pull_request]
 
 # jobs:
 #   build:
