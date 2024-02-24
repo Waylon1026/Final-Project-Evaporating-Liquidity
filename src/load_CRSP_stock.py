@@ -1,3 +1,8 @@
+"""
+This module pulls and saves daily stock data from CRSP.
+The data is needed to construct portfolios used in Reversal strategy.
+"""
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
@@ -14,20 +19,16 @@ START_DATE = config.START_DATE
 END_DATE = config.END_DATE
 
 
-
 def pull_CRSP_daily_file(
     start_date=START_DATE, end_date=END_DATE, wrds_username=WRDS_USERNAME
 ):
     """
-    Pulls monthly CRSP stock data from a specified start date to end date.
+    Pulls daily CRSP stock data from a specified start date to end date.
 
-    SQL query to pull data, controls for delisting, and importantly
-    follows the guidelines that CRSP uses for inclusion, with the exception
-    of code 73, which is foreign companies -- without including this, the universe
-    of securities is roughly half of what it should be.
+    Uses SQL query to pull data of stocks with share code 10 or 11, 
+    from NYSE, AMEX, and Nasdaq.
     """
-    # Not a perfect solution, but since value requires t-1 period market cap,
-    # we need to pull one extra month of data. This is hidden from the user.
+    # pull one extra month of data for cleaning the data
     start_date = datetime.strptime(start_date, "%Y-%m-%d")
     start_date = start_date - relativedelta(months=1)
     start_date = start_date.strftime("%Y-%m-%d")
@@ -35,9 +36,8 @@ def pull_CRSP_daily_file(
     query = f"""
     SELECT 
         date,
-        dsf.permno, dsf.permco, exchcd, 
-        prc, bid, ask, shrout, cfacpr, cfacshr,
-        ret, retx
+        permno, permco, date, ret, retx, 
+        bid, ask, shrout, cfacpr, cfacshr,
     FROM crsp.dsf AS dsf
     LEFT JOIN 
         crsp.msenames as msenames
@@ -47,8 +47,7 @@ def pull_CRSP_daily_file(
         dsf.date <= msenames.nameendt
     WHERE 
         dsf.date BETWEEN '{start_date}' AND '{end_date}' AND 
-        msenames.shrcd IN (10, 11) AND
-        msenames.exchcd BETWEEN 1 AND 3
+        msenames.shrcd IN (10, 11)
     """
     # with wrds.Connection(wrds_username=wrds_username) as db:
     #     df = db.raw_sql(
@@ -56,7 +55,7 @@ def pull_CRSP_daily_file(
     #     )
     db = wrds.Connection(wrds_username=wrds_username)
     df = db.raw_sql(
-        query, date_cols=["date"]
+        query, date_cols=["date", "namedt", "nameendt"]
     )
     db.close()
 
@@ -65,14 +64,20 @@ def pull_CRSP_daily_file(
 
     return df
 
+
 def load_CRSP_daily_file(data_dir=DATA_DIR):
     """
-    Load CRSP stock data from disk
+    Load daily CRSP stock data
     """
     path = Path(data_dir) / "pulled" / "CRSP_stock.parquet"
-    return pd.read_parquet(path)
+    crsp = pd.read_parquet(path)
+    return crsp
+
+
+def demo():
+    crsp = load_CRSP_daily_file(data_dir=DATA_DIR)
+
 
 if __name__ == "__main__":
-
     crsp = pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
     crsp.to_parquet(DATA_DIR / "pulled" / "CRSP_stock.parquet")
