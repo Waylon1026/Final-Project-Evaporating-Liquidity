@@ -18,12 +18,6 @@ def load_vix_from_fred(start="1998-01-01", end="2010-12-31"):
     df = pandas_datareader.get_data_fred("VIXCLS", start=start, end=end)
     return df
 
-def load_crsp_stock_daily():
-    """
-    Load CRSP daily stock return from WRDS
-    """
-    pass
-
 
 if __name__ == "__main__":
     df = load_vix_from_fred()
