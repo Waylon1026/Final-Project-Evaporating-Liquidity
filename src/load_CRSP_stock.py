@@ -76,10 +76,38 @@ def load_CRSP_daily_file(data_dir=DATA_DIR):
     return crsp
 
 
+
+def pull_CRSP_index_files(
+    start_date=START_DATE, end_date=END_DATE, wrds_username=WRDS_USERNAME
+):
+    # Pull index files
+    query = f"""
+        SELECT * 
+        FROM crsp.dsix
+        WHERE caldt BETWEEN '{start_date}' AND '{end_date}'
+    """
+    # with wrds.Connection(wrds_username=wrds_username) as db:
+    #     df = db.raw_sql(query, date_cols=["month", "caldt"])
+    db = wrds.Connection(wrds_username=wrds_username)
+    df = db.raw_sql(query, date_cols=["caldt"])
+    db.close()
+    return df
+
+
+def load_CRSP_index_files(data_dir=DATA_DIR):
+    path = Path(data_dir) / "pulled" / f"CRSP_DSIX.parquet"
+    df = pd.read_parquet(path)
+    return df
+
 def demo():
-    crsp = load_CRSP_daily_file(data_dir=DATA_DIR)
+    # crsp = load_CRSP_daily_file(data_dir=DATA_DIR)
+    df_msix = load_CRSP_index_files(data_dir=DATA_DIR)
 
 
 if __name__ == "__main__":
-    crsp = pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
-    crsp.to_parquet(DATA_DIR / "pulled" / "CRSP_stock.parquet")
+    # crsp = pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
+    # crsp.to_parquet(DATA_DIR / "pulled" / "CRSP_stock.parquet")
+
+    df_msix = pull_CRSP_index_files(start_date=START_DATE, end_date=END_DATE)
+    path = Path(DATA_DIR) / "pulled" / f"CRSP_DSIX.parquet"
+    df_msix.to_parquet(path)
