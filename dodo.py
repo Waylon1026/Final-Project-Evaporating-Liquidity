@@ -115,7 +115,7 @@ def task_pull_CRSP_Stock():
 #         "file_dep": file_dep,
 #     }
 
-"""
+'''
 def task_summary_stats():
     """ """
     file_dep = ["./src/example_table.py"]
@@ -219,7 +219,7 @@ def task_run_notebooks():
         "file_dep": file_dep,
         "clean": True,
     }
-"""
+'''
 
 # def task_knit_RMarkdown_files():
 #     """Preps the RMarkdown files for presentation format.
@@ -252,7 +252,7 @@ def task_run_notebooks():
 #         "file_dep": file_dep,
 #     }
 
-"""
+'''
 def task_compile_latex_docs():
     """Example plots"""
     file_dep = [
@@ -279,4 +279,4 @@ def task_compile_latex_docs():
         "file_dep": file_dep,
         "clean": True,
     }
-"""
+'''
