@@ -29,6 +29,7 @@ def jupyter_clear_output(notebook):
     return f"jupyter nbconvert --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace ./src/{notebook}.ipynb"
 # fmt: on
 
+'''
 def get_os():
     os_name = platform.system()
     if os_name == "Windows":
@@ -39,7 +40,9 @@ def get_os():
         return "nix"
     else:
         return "unknown"
+    
 os_type = get_os()
+
 
 def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     origin_path = Path(origin_folder) / f"{notebook_stem}.ipynb"
@@ -49,11 +52,10 @@ def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     else:
         command = f"copy  {origin_path} {destination_path}"
     return command
-
+'''
 
 def task_pull_CRSP_Stock():
-    """Pull CRSPdata from WRDS and save to disk
-    """
+    """Pull CRSP data from WRDS and save to disk"""
     file_dep = [
         "./src/config.py", 
         "./src/load_CRSP_stock.py",
@@ -76,6 +78,27 @@ def task_pull_CRSP_Stock():
         "clean": True,
         "verbosity": 2, # Print everything immediately. This is important in
         # case WRDS asks for credentials.
+    }
+
+
+def task_pull_FF_industry():
+    """
+    Pull 48 industry portfolio data from the Fama/French Data Library 
+    and save to disk
+    """
+    file_dep = ["./src/config.py", "./src/load_FF_industry.py"]
+    file_output = ["FF_portfolios_value_weighted.parquet", 
+                   "FF_portfolios_equal_weighted.parquet"]
+    targets = [DATA_DIR / "pulled" / file for file in file_output]
+
+    return {
+        "actions": [
+            "ipython src/config.py",
+            "ipython ./src/load_FF_industry.py",
+        ],
+        "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
     }
 
 

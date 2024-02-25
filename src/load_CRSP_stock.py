@@ -1,5 +1,5 @@
 """
-This module pulls and saves daily stock data from CRSP.
+This module pulls and saves CRSP daily stock data from WRDS.
 The data is needed to construct portfolios used in Reversal strategy.
 """
 
