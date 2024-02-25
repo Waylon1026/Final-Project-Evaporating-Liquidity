@@ -34,7 +34,10 @@ the quote-midpoint is used to calculate transaction-price returns. (already cons
 
 #####################
 
-crsp_pulled = load_CRSP_stock.pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
+# crsp_pulled = load_CRSP_stock.pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
+
+# after running doit
+crsp_pulled = load_CRSP_stock.load_CRSP_daily_file(data_dir=DATA_DIR)
 
 crsp = crsp_pulled.copy()
 
