@@ -34,26 +34,6 @@ the quote-midpoint is used to calculate transaction-price returns. (already cons
 
 
 
-#####################
-
-# crsp_pulled = load_CRSP_stock.pull_CRSP_daily_file(wrds_username=WRDS_USERNAME)
-
-# after running doit
-crsp_pulled = load_CRSP_stock.load_CRSP_daily_file(data_dir=DATA_DIR)
-
-crsp = crsp_pulled.copy()
-
-
-# groupby permno, date
-crsp = crsp.groupby(['permno', 'date']).first()
-
-# drop permco
-crsp = crsp.drop(columns=['permco'])
-
-# calculate quote-midpoint (average of closing bid and ask quotes)
-crsp['quote_midpoint'] = (crsp['bid'] + crsp['ask']) / 2
-
-
 
 ######################
 
@@ -139,7 +119,7 @@ def clean_one_day_return(df):
 def select_stocks_by_closing_prices(df):
 
     # time range
-    df = clean_date(df)
+    # df = clean_date(df)
 
     # stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
     df = clean_1dollar_prc(df)
@@ -155,7 +135,7 @@ def select_stocks_by_closing_prices(df):
 def select_stocks_by_quote_midpoints(df):
 
     # time range
-    df = clean_date(df)
+    # df = clean_date(df)
 
     # Nasdaq stocks only
     df = df[df['exchcd'] == 3]
