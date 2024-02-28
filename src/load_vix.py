@@ -11,7 +11,7 @@ from pathlib import Path
 DATA_DIR = Path(config.DATA_DIR)
 
 
-def load_vix_from_fred(start="1998-01-01", end="2010-12-31"):
+def load_vix_from_fred(start="1998-01-01", end="2023-12-31"):
     """
     Load VIX data from FRED
     """
