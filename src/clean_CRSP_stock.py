@@ -70,11 +70,22 @@ the quote-midpoint is used to calculate transaction-price returns. (already cons
 ######################
 # Helper function
 
-## Time period: 1998 - 2010
-def clean_date(df):
+## Time period
+def clean_date(df, start_year, end_year):
     df['date'] = pd.to_datetime(df['date'])
-    df = df[(df['date'].dt.year >= 1998) & (df['date'].dt.year <= 2010)]
+    df = df[(df['date'].dt.year >= start_year) & (df['date'].dt.year <= end_year)]
     return df 
+
+
+## Prc is the closing price or the negative bid/ask average for a trading day. 
+## If the closing price is not available on any given trading day, the number in the price field has a negative sign to indicate that it is a bid/ask average and not an actual closing price. 
+## Please note that in this field the negative sign is a symbol and that the value of the bid/ask average is not negative.
+## If neither closing price nor bid/ask average is available on a date, prc is set to zero. 
+
+def clean_prc_to_positive(df):
+    df['prc'] = np.abs(df['prc'])
+    return df
+
 
 ## stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
 ## Junhan's version: For a given stock at day t, if the closing price of the stock at last day of previous month is less than 1, then this row will be removed from the dataset.
@@ -104,9 +115,11 @@ def clean_bid_quote_midpoint(df):
 ## If a closing transaction price is not available, the quote-midpoint is used to calculate transaction-price returns.
 def clean_one_day_return(df):
     df['prc'] = np.where(df['prc'].isnull(), df['quote_midpoint'], df['prc'])
-    df['transaction_price_return'] = df['prc'].pct_change()
-    df['quote_midpoint_return'] = df['quote_midpoint'].pct_change()
+
+    df['transaction_price_return'] = df.groupby('permno')['prc'].pct_change()
+    df['quote_midpoint_return'] = df.groupby('permno')['quote_midpoint'].pct_change()
     df = df[(df['quote_midpoint_return'] - df['transaction_price_return'] >= -0.5) & (df['quote_midpoint_return'] - df['transaction_price_return'] <= 1)]
+
     return df.drop(columns=['transaction_price_return', 'quote_midpoint_return'])
 
 
@@ -120,6 +133,10 @@ def select_stocks_by_closing_prices(df):
 
     # time range
     # df = clean_date(df)
+
+    # make sure 'prc' is positive
+    # negative sign means using bid/ask average instead of closing price
+    df = clean_prc_to_positive(df)
 
     # stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
     df = clean_1dollar_prc(df)
@@ -137,11 +154,12 @@ def select_stocks_by_quote_midpoints(df):
     # time range
     # df = clean_date(df)
 
+    # make sure 'prc' is positive
+    # negative sign means using bid/ask average instead of closing price
+    df = clean_prc_to_positive(df)
+
     # Nasdaq stocks only
     df = df[df['exchcd'] == 3]
-
-    # stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
-    df = clean_1dollar_prc(df)
 
     # calculate mid-quote
 
@@ -156,6 +174,9 @@ def select_stocks_by_quote_midpoints(df):
 
     # clean the sample: one-day return based on quote-midpoints minus the return based on closing prices is less than -50% and higher than 100%
     df = clean_one_day_return(df)
+
+    # stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
+    df = clean_1dollar_prc(df)
 
     return df.reset_index()
 
