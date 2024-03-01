@@ -42,7 +42,7 @@ def get_os():
         return "unknown"
     
 os_type = get_os()
-
+'''
 
 def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     origin_path = Path(origin_folder) / f"{notebook_stem}.ipynb"
@@ -52,10 +52,12 @@ def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     else:
         command = f"copy  {origin_path} {destination_path}"
     return command
-'''
+
 
 def task_pull_CRSP_Stock():
-    """Pull CRSP data from WRDS and save to disk"""
+    """
+    Pull CRSP data from WRDS and save to disk
+    """
     file_dep = [
         "./src/config.py", 
         "./src/load_CRSP_stock.py",
@@ -102,41 +104,43 @@ def task_pull_FF_industry():
     }
 
 
-# def task_pull_data_via_presto():
-#     """
-#     Run several data pulls
+def task_pull_vix():
+    """
+    Pull vix data from FRED and save to disk
+    """
+    file_dep = ["./src/config.py", "./src/load_vix.py"]
+    file_output = ["vix.parquet"]
+    targets = [DATA_DIR / "pulled" / file for file in file_output]
 
-#     This will run commands like this:
-#     presto-cli --output-format=CSV_HEADER --file=/data/unixhome/src/sql_gross_performance.sql > /data/unixhome/src/sometest.csv
+    return {
+        "actions": [
+            "ipython src/config.py",
+            "ipython ./src/load_vix.py",
+        ],
+        "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
+    }
 
-#     """
-#     sql_pulls_dict = {
-#         'sometest.sql':'sometest.csv',
-#     }
-#     file_dep = list(sql_pulls_dict.keys())
-#     file_output = list(sql_pulls_dict.values())
 
-#     targets = [PRIVATE_DATA_DIR / 'sql_pulled' / file for file in file_output]
+def task_clean_CRSP_stock():
+    """
+    Clean CRSP data and save to disk
+    """
+    file_dep = ["./src/config.py", "./src/clean_CRSP_stock.py"]
+    file_output = ["CRSP_closing_price.parquet", "CRSP_midpoint.parquet"]
+    targets = [DATA_DIR / "pulled" / file for file in file_output]
 
-#     def action_string(sql_file, csv_output):
-#         s = f"""
-#             ssh sql.someurl.com <<-'ENDSSH'
-#             echo Starting Presto Pull Command for {sql_file}
-#             cd {getcwd()}
-#             presto-cli --output-format=CSV_HEADER --file={sql_file} > {csv_output}
-#             """
-#         return s
-#     actions = [
-#                 action_string(sql_file,
-#                               (PRIVATE_DATA_DIR / 'sql_pulled' / sql_pulls_dict[sql_file])
-#                               ) for sql_file in sql_pulls_dict
-#             ]
-#     return {
-#         "actions":actions,
-#         "targets": targets,
-#         'task_dep':[],
-#         "file_dep": file_dep,
-#     }
+    return {
+        "actions": [
+            "ipython src/config.py",
+            "ipython ./src/clean_CRSP_stock.py",
+        ],
+        "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
+    }
+
 
 '''
 def task_summary_stats():
@@ -203,8 +207,9 @@ def task_convert_notebooks_to_scripts():
         "file_dep": file_dep,
         "clean": True,
     }
+'''
 
-
+'''
 def task_run_notebooks():
     """Preps the notebooks for presentation format.
     Execute notebooks with summary stats and plots and remove metadata.

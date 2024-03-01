@@ -99,6 +99,7 @@ def load_CRSP_index_files(data_dir=DATA_DIR):
     df = pd.read_parquet(path)
     return df
 
+
 def demo():
     crsp = load_CRSP_daily_file(data_dir=DATA_DIR)
     df_msix = load_CRSP_index_files(data_dir=DATA_DIR)

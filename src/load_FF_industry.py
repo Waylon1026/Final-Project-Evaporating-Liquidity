@@ -12,8 +12,6 @@ from pathlib import Path
 DATA_DIR = Path(config.DATA_DIR)
 START_DATE = config.START_DATE
 END_DATE = config.END_DATE
-# START_DATE="1998-01-01"
-# END_DATE="2010-12-31"
 
 
 def pull_FF_industry_portfolio_daily(start=START_DATE, end=END_DATE):
