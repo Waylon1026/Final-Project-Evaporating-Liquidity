@@ -35,5 +35,5 @@ def demo():
 
 
 if __name__ == "__main__":
-    df = load_vix()
+    df = pull_vix_from_fred()
     df.to_parquet(DATA_DIR / "pulled" / "vix.parquet")
