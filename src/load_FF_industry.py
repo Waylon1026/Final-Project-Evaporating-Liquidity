@@ -1,7 +1,7 @@
 """
 This module pulls and saves 48 industry portfolio daily returns from the Fama/French Data Library.
 The industry portfolios are constructed by classifying stocks into 48 industries as in Fama and French (1997).
-The data is needed to evaluate performance of the industry portfolios used in Reversal strategy.
+The data is needed to construct the industry portfolios used in Reversal strategy.
 """
 
 import pandas as pd
@@ -10,7 +10,8 @@ import config
 from pathlib import Path
 
 DATA_DIR = Path(config.DATA_DIR)
-START_DATE = config.START_DATE
+# START_DATE = config.START_DATE
+START_DATE = "1997-12-24"  # need to start with data from the last 5 days of 1997
 END_DATE = config.END_DATE
 
 

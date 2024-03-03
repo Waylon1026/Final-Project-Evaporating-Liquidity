@@ -21,7 +21,7 @@ def pull_vix_from_fred(start=START_DATE, end=END_DATE):
     return df
 
 
-def load_vix(data_dir=DATA_DIR):
+def load_vix_from_fred(data_dir=DATA_DIR):
     """
     Load VIX data from FRED
     """
@@ -31,7 +31,7 @@ def load_vix(data_dir=DATA_DIR):
 
 
 def demo():
-    vix = load_vix(data_dir=DATA_DIR)
+    vix = load_vix_from_fred(data_dir=DATA_DIR)
 
 
 if __name__ == "__main__":

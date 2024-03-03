@@ -38,13 +38,15 @@ the quote-midpoint is used to calculate transaction-price returns. (already cons
 
 ### Helper functions to clean the CRSP stock data ###
 
-
+# need to start with data from the last 5 days of 1997
 def clean_date(df, start_year=1998, end_year=2024):
     """
     Select the CRSP stock data for a specific time period
     """
     df['date'] = pd.to_datetime(df['date'])
-    df = df[(df['date'].dt.year >= start_year) & (df['date'].dt.year <= end_year)]
+    # df = df[(df['date'].dt.year >= start_year) & (df['date'].dt.year <= end_year)]
+    df = df[df['date'] >= '1997-12-27']
+    df = df[df['date'].dt.year <= end_year]
     return df 
 
 
