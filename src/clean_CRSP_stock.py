@@ -66,14 +66,14 @@ def clean_prc_to_positive(df):
     return df
 
 
-## stocks must have a closing price of at least $1 on the last trading day of the previous calendar month
-## Junhan's version: For a given stock at day t, if the closing price of the stock at last day of previous month is less than 1, then this row will be removed from the dataset.
-## update: Exclude the stock from the sample, not just the row (period)
-
 def clean_1dollar_prc(df):
     """
     Filter stocks with closing price (prc) of at least $1 
     on the last trading day of the previous calendar month
+
+    For a given stock at day t, 
+    if the closing price of the stock at last day of previous month is less than 1, 
+    then this row will be removed from the dataset.
     """
     df['period'] = df['date'].dt.to_period('M')
     df_month = df.copy()
@@ -81,8 +81,8 @@ def clean_1dollar_prc(df):
     df_month = df_month[df_month['prc'] < 1]
     df_month['period'] = df_month['period'].apply(lambda x: x + 1)
 
-    df['key'] = df['permno'].astype(str) #+ df['period'].astype(str)
-    df_month['key'] = df_month['permno'].astype(str) #+ df_month['period'].astype(str)
+    df['key'] = df['permno'].astype(str) + df['period'].astype(str)
+    df_month['key'] = df_month['permno'].astype(str) + df_month['period'].astype(str)
     df = df[~df['key'].isin(df_month['key'])].drop(columns=['key', 'period'])
     
     return df
@@ -106,11 +106,13 @@ def clean_one_day_return(df):
     """
     df['prc'] = np.where(df['prc'].isnull(), df['quote_midpoint'], df['prc'])
 
+    # calculate the one-day return
     df['transaction_price_return'] = df.groupby('permno')['prc'].pct_change()
     df['quote_midpoint_return'] = df.groupby('permno')['quote_midpoint'].pct_change()
+
     df = df[(df['quote_midpoint_return'] - df['transaction_price_return'] >= -0.5) & (df['quote_midpoint_return'] - df['transaction_price_return'] <= 1)]
 
-    return df.drop(columns=['transaction_price_return', 'quote_midpoint_return'])
+    return df
 
 
 ########################################################################################
@@ -149,10 +151,9 @@ def select_stocks_by_quote_midpoints(df):
 
     # calculate mid-quote
 
-    ## Q: whether to use the adjustment factors or not???
-    # # adjusting the price using adjustment factors
-    # df['bid'] = df['bid'] / df['cfacpr']
-    # df['ask'] = df['ask'] / df['cfacpr']
+    # adjusting the price using adjustment factors
+    df['bid'] = df['bid'] / df['cfacpr']
+    df['ask'] = df['ask'] / df['cfacpr']
     df['quote_midpoint'] = (df['bid'] + df['ask']) / 2
 
     # clean the sample: ratio of bid to quote-midpoint is not smaller than 0.5
