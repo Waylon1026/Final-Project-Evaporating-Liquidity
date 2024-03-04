@@ -12,7 +12,6 @@ OUTPUT_DIR = config.OUTPUT_DIR
 DATA_DIR = config.DATA_DIR
 WRDS_USERNAME = config.WRDS_USERNAME
 
-import misc_tools
 import load_CRSP_stock
 
 
@@ -38,16 +37,19 @@ the quote-midpoint is used to calculate transaction-price returns. (already cons
 
 ### Helper functions to clean the CRSP stock data ###
 
-# need to start with data from the last 5 days of 1997
+# need to start with data from the last 5 trading days of the year before the start year
 def clean_date(df, start_year=1998, end_year=2024):
     """
     Select the CRSP stock data for a specific time period
     """
     df['date'] = pd.to_datetime(df['date'])
     # df = df[(df['date'].dt.year >= start_year) & (df['date'].dt.year <= end_year)]
-    df = df[df['date'] >= '1997-12-27']
+    # df = df[df['date'] >= '1997-12-27']
+    date = df['date'].unique()
+    start_date = date[date.year < start_year][-5]
+    df = df[df['date'] >= start_date]
     df = df[df['date'].dt.year <= end_year]
-    return df 
+    return df
 
 
 def clean_prc_to_positive(df):
@@ -79,7 +81,7 @@ def clean_1dollar_prc(df):
     df_month = df.copy()
     df_month = df_month.groupby(['permno', 'period'], as_index=False).last()
     df_month = df_month[df_month['prc'] < 1]
-    df_month['period'] = df_month['period'].apply(lambda x: x + 1)
+    df_month['period'] = df_month['period'] + 1
 
     df['key'] = df['permno'].astype(str) + df['period'].astype(str)
     df_month['key'] = df_month['permno'].astype(str) + df_month['period'].astype(str)
@@ -104,7 +106,12 @@ def clean_one_day_return(df):
     If a closing transaction price is not available, 
     the quote-midpoint is used to calculate transaction-price returns.
     """
-    df['prc'] = np.where(df['prc'].isnull(), df['quote_midpoint'], df['prc'])
+    df['prc'] = np.where(df['prc'].isnull(), df['quote_midpoint'] * df['cfacpr'], df['prc'])
+    # a negative sign means prc is a bid/ask average instead of a closing price
+    df = clean_prc_to_positive(df)
+    # if neither closing price nor bid/ask average is available on a date, prc is set to zero. 
+    df['prc'] = df['prc'].fillna(0)
+    df['quote_midpoint'] = df['quote_midpoint'].abs().fillna(0)
 
     # calculate the one-day return
     df['transaction_price_return'] = df.groupby('permno')['prc'].pct_change()
