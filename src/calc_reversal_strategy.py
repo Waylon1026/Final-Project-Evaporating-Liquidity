@@ -12,7 +12,6 @@ import load_FF_industry
 import clean_CRSP_stock
 
 def calc_reverse_strategy_ret(df, type_col='industry', ret_col='ret'):
-    df = df.copy()
     df['ret-avg'] = df.groupby('date')[ret_col].transform(lambda x: x - x.mean())
     df['w'] = df.groupby('date')['ret-avg'].transform(lambda x: - x / (0.5 * x.abs().sum()))
 
@@ -27,17 +26,16 @@ def calc_reverse_strategy_ret(df, type_col='industry', ret_col='ret'):
 def calc_reverse_strategy_industry(df, start=START_DATE, end=END_DATE):
     df = df.unstack().reset_index()
     df.columns = ["industry", "date", "ret"]
-    df = df[(df['date']>=start) & (df['date']<=end)]
 
-    return calc_reverse_strategy_ret(df, 'industry', 'ret')
+    rev_ret = calc_reverse_strategy_ret(df, 'industry', 'ret')
+    return rev_ret[(rev_ret.index>=start) & (rev_ret.index<=end)]
 
 
 def calc_reverse_strategy_individual(df, ret_col='retx', start=START_DATE, end=END_DATE):
-
-    df = df[(df['date']>=start) & (df['date']<=end)]
     df[ret_col] *= 100
 
-    return calc_reverse_strategy_ret(df, 'permno', ret_col)
+    rev_ret = calc_reverse_strategy_ret(df, 'permno', ret_col)
+    return rev_ret[(rev_ret.index>=start) & (rev_ret.index<=end)]
 
 
 def calc_beta(factor, fund_ret, constant = True):
