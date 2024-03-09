@@ -18,6 +18,7 @@ import calc_reversal_strategy
 import load_vix
 
 import numpy as np
+import numpy as np
 def performance_summary(return_data, annualization = 252):
     """ 
         Returns the Performance Stats for given set of returns
@@ -33,15 +34,14 @@ def performance_summary(return_data, annualization = 252):
 
     summary_stats['Skewness'] = return_data.skew()
     summary_stats['Kurtosis'] = return_data.kurtosis() + 3
-    summary_stats['VaR (0.05)'] = return_data.quantile(.05, axis = 0)
-    summary_stats['CVaR (0.05)'] = return_data[return_data <= return_data.quantile(.05, axis = 0)].mean()
+    summary_stats['VaR (0.05)(%)'] = return_data.quantile(.05, axis = 0)
+    summary_stats['CVaR (0.05)(%)'] = return_data[return_data <= return_data.quantile(.05, axis = 0)].mean()
     
-    return_data = return_data[(return_data>return_data.quantile(0.02)) & (return_data<return_data.quantile(0.98))].dropna()
-    wealth_index = (1+return_data).cumprod()
+    wealth_index = (1+return_data/100).cumprod()
     previous_peaks = wealth_index.cummax()
     drawdowns = (wealth_index - previous_peaks)/previous_peaks
 
-    summary_stats['Max Drawdown'] = drawdowns.min()
+    summary_stats['Max Drawdown(%)'] = drawdowns.min()
     summary_stats = summary_stats.applymap('{:.2f}'.format)
     summary_stats['Peak'] = [previous_peaks[col][:drawdowns[col].idxmin()].idxmax() for col in previous_peaks.columns]
     summary_stats['Bottom'] = drawdowns.idxmin()
@@ -64,6 +64,9 @@ def performance_summary(return_data, annualization = 252):
     
     
     return summary_stats.T
+    
+    
+    return summary_stats.T
 
 
 
@@ -72,7 +75,11 @@ if __name__ == "__main__":
 
     # Generate Additional Analysis Table
     ret_raw = calc_reversal_strategy.load_reversal_return(data_dir=DATA_DIR)
-    performance_matrix = performance_summary(ret_raw, 252)
+    index = pd.read_parquet(DATA_DIR / "pulled" / "CRSP_DSIX.parquet")
+    index = index.set_index('caldt')['vwretx']*100
+    strategies = pd.concat([ret_raw, index], axis=1)
+    strategies.columns = ['Transact. prices','Quote-midpoints','Industry portfolio', 'CRSP Value Weighted Index']
+    performance_matrix = performance_summary(strategies, 252)
     performance_matrix.to_parquet(DATA_DIR / "derived" / "Additional_Table.parquet")
 
     vix = load_vix.load_vix(data_dir=DATA_DIR)
