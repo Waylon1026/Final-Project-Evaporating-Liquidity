@@ -123,18 +123,18 @@ def generate_table(data, data_m):
     table = table.drop(['R-squared', 'R-squared Adj.'], axis=0)
 
     columns = pd.MultiIndex.from_tuples([
-        ('Individual stocks\nTransaction-price returns', 'Daily', '(1)'),
-        ('Individual stocks\nTransaction-price returns', 'Daily', '(2)'),
-        ('Individual stocks\nTransaction-price returns', 'Daily', '(3)'),
-        ('Individual stocks\nTransaction-price returns', 'Monthly', '(4)'),
-        ('Individual stocks\nQuote-midpoint returns', 'Daily', '(5)'),
-        ('Individual stocks\nQuote-midpoint returns', 'Daily', '(6)'),
-        ('Individual stocks\nQuote-midpoint returns', 'Daily', '(7)'),
-        ('Individual stocks\nQuote-midpoint returns', 'Monthly', '(8)'),
-        ('Industry\nportfolios', 'Daily', '(9)'),
-        ('Industry\nportfolios', 'Daily', '(10)'),
-        ('Industry\nportfolios', 'Daily', '(11)'),
-        ('Industry\nportfolios', 'Monthly', '(12)'),
+        (r'Individual stocks\nTransaction-price returns', 'Daily', '(1)'),
+        (r'Individual stocks\nTransaction-price returns', 'Daily', '(2)'),
+        (r'Individual stocks\nTransaction-price returns', 'Daily', '(3)'),
+        (r'Individual stocks\nTransaction-price returns', 'Monthly', '(4)'),
+        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(5)'),
+        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(6)'),
+        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(7)'),
+        (r'Individual stocks\nQuote-midpoint returns', 'Monthly', '(8)'),
+        (r'Industry\nportfolios', 'Daily', '(9)'),
+        (r'Industry\nportfolios', 'Daily', '(10)'),
+        (r'Industry\nportfolios', 'Daily', '(11)'),
+        (r'Industry\nportfolios', 'Monthly', '(12)'),
     ])
 
     table.columns = columns
