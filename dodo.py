@@ -54,33 +54,33 @@ def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     return command
 
 
-def task_pull_CRSP_Stock():
-    """
-    Pull CRSP data from WRDS and save to disk
-    """
-    file_dep = [
-        "./src/config.py", 
-        "./src/load_CRSP_stock.py",
-        ]
-    targets = [
-        Path(DATA_DIR) / "pulled" / file for file in 
-        [
-            ## src/load_CRSP_stock.py
-            "CRSP_stock.parquet", 
-        ]
-    ]
+# def task_pull_CRSP_Stock():
+#     """
+#     Pull CRSP data from WRDS and save to disk
+#     """
+#     file_dep = [
+#         "./src/config.py", 
+#         "./src/load_CRSP_stock.py",
+#         ]
+#     targets = [
+#         Path(DATA_DIR) / "pulled" / file for file in 
+#         [
+#             ## src/load_CRSP_stock.py
+#             "CRSP_stock.parquet", 
+#         ]
+#     ]
 
-    return {
-        "actions": [
-            "ipython src/config.py",
-            "ipython src/load_CRSP_stock.py",
-        ],
-        "targets": targets,
-        "file_dep": file_dep,
-        "clean": True,
-        "verbosity": 2, # Print everything immediately. This is important in
-        # case WRDS asks for credentials.
-    }
+#     return {
+#         "actions": [
+#             "ipython src/config.py",
+#             "ipython src/load_CRSP_stock.py",
+#         ],
+#         "targets": targets,
+#         "file_dep": file_dep,
+#         "clean": True,
+#         "verbosity": 2, # Print everything immediately. This is important in
+#         # case WRDS asks for credentials.
+#     }
 
 
 def task_pull_FF_industry():
@@ -142,20 +142,19 @@ def task_clean_CRSP_stock():
     }
 
 
-'''
-def task_summary_stats():
-    """ """
-    file_dep = ["./src/example_table.py"]
-    file_output = [
-        "example_table.tex",
-        "pandas_to_latex_simple_table1.tex",
-        ]
+def task_replicate_table_1():
+    """ 
+    Construct reversal strategy,
+    replicate Table 1: Summary Statistics of Reversal Strategy Returns
+    """
+    file_dep = ["./src/config.py", "./src/calc_reversal_strategy.py"]
+    file_output = ["reversal_return.parquet", "Table_1A.parquet", "Table_1B.parquet"]
     targets = [OUTPUT_DIR / file for file in file_output]
 
     return {
         "actions": [
-            "ipython ./src/example_table.py",
-            "ipython ./src/pandas_to_latex_demo.py",
+            "ipython src/config.py",
+            "ipython ./src/calc_reversal_strategy.py",
         ],
         "targets": targets,
         "file_dep": file_dep,
@@ -163,6 +162,7 @@ def task_summary_stats():
     }
 
 
+'''
 def task_example_plot():
     """Example plots"""
     file_dep = [Path("./src") / file for file in ["example_plot.py", "load_fred.py"]]
