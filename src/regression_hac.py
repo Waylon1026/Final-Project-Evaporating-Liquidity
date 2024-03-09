@@ -142,6 +142,8 @@ def generate_table(data, data_m):
     with open(OUTPUT_DIR / 'Table_2.tex', 'w') as f:
         f.write(table_latex)
 
+    table.to_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
+
     return table
 
 
