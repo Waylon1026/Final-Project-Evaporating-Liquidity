@@ -111,6 +111,8 @@ def summary_stats(df):
     stats['Beta'] = df.apply(lambda x: calc_beta(index, x), axis=0)
     stats['Annualized Sharpe Ratio'] = stats['Mean return(% per day)'] / stats['Std.dev.(% per day)'] * (252**0.5)
 
+    stats = stats.applymap('{:.2f}'.format)
+
     return stats.T
 
 
