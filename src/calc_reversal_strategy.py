@@ -73,6 +73,11 @@ def summary_stats(df):
     return stats.T
 
 
+def load_reversal_return(data_dir=DATA_DIR):
+    path = Path(data_dir) / "derived" / "reversal_return.parquet"
+    return pd.read_parquet(path)
+
+
 if __name__ == "__main__":
     ff = load_FF_industry.load_FF_industry_portfolio_daily(data_dir=DATA_DIR)[0]
     dfcp = clean_CRSP_stock.load_CRSP_closing_price(data_dir=DATA_DIR)
@@ -85,6 +90,7 @@ if __name__ == "__main__":
 
     df = pd.concat([rev_transact, rev_midpoint, rev_industry], axis=1)
     df.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
+    df.to_parquet(DATA_DIR / "derived" / "reversal_return.parquet")
 
     df_stat = summary_stats(df)
-    df_stat.to_parquet(DATA_DIR / "pulled" / "Table_1A.parquet")
+    df_stat.to_parquet(DATA_DIR / "derived" / "Table_1A.parquet")

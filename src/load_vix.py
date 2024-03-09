@@ -21,17 +21,13 @@ def pull_vix_from_fred(start=START_DATE, end=END_DATE):
     return df
 
 
-def load_vix_from_fred(data_dir=DATA_DIR):
+def load_vix(data_dir=DATA_DIR):
     """
-    Load VIX data from FRED
+    Load VIX data from local file
     """
     path = Path(data_dir) / "pulled" / "vix.parquet"
-    vix = pd.read_parquet(path)
-    return vix
+    return pd.read_parquet(path)
 
-
-def demo():
-    vix = load_vix_from_fred(data_dir=DATA_DIR)
 
 
 if __name__ == "__main__":
