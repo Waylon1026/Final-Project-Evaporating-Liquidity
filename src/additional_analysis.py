@@ -73,7 +73,8 @@ if __name__ == "__main__":
     strategies = pd.concat([ret_raw, index], axis=1)
     strategies.columns = ['Transact. prices','Quote-midpoints','Industry portfolio', 'CRSP Value Weighted Index']
     performance_matrix = performance_summary(strategies, 252)
-    performance_matrix.to_parquet(DATA_DIR / "derived" / "Additional_Table.parquet")
+    performance_matrix.to_latex(OUTPUT_DIR / 'Additional_Table.tex')
+    # performance_matrix.to_parquet(DATA_DIR / "derived" / "Additional_Table.parquet")
 
     vix = load_vix.load_vix(data_dir=DATA_DIR)
     reversal_strategy = ret_raw.join(vix, how='left')
