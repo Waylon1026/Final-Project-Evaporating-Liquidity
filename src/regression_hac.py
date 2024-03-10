@@ -106,7 +106,7 @@ def regression_all(data, data_m, y_col):
     return [result_vix, result_vix_g, result_vix_g_rm, result_monthly]
 
 
-def generate_table(data, data_m):
+def generate_table(data, data_m, reproduce=False):
     """
     Generate table 2
     """
@@ -122,33 +122,52 @@ def generate_table(data, data_m):
 
     table = table.drop(['R-squared', 'R-squared Adj.'], axis=0)
 
+    # columns = pd.MultiIndex.from_tuples([
+    #     (r'Individual stocks Transaction-price returns', 'Daily', '(1)'),
+    #     (r'Individual stocks Transaction-price returns', 'Daily', '(2)'),
+    #     (r'Individual stocks Transaction-price returns', 'Daily', '(3)'),
+    #     (r'Individual stocks Transaction-price returns', 'Monthly', '(4)'),
+    #     (r'Individual stocks Quote-midpoint returns', 'Daily', '(5)'),
+    #     (r'Individual stocks Quote-midpoint returns', 'Daily', '(6)'),
+    #     (r'Individual stocks Quote-midpoint returns', 'Daily', '(7)'),
+    #     (r'Individual stocks Quote-midpoint returns', 'Monthly', '(8)'),
+    #     (r'Industry portfolios', 'Daily', '(9)'),
+    #     (r'Industry portfolios', 'Daily', '(10)'),
+    #     (r'Industry portfolios', 'Daily', '(11)'),
+    #     (r'Industry portfolios', 'Monthly', '(12)'),
+    # ])
+
     columns = pd.MultiIndex.from_tuples([
-        (r'Individual stocks\nTransaction-price returns', 'Daily', '(1)'),
-        (r'Individual stocks\nTransaction-price returns', 'Daily', '(2)'),
-        (r'Individual stocks\nTransaction-price returns', 'Daily', '(3)'),
-        (r'Individual stocks\nTransaction-price returns', 'Monthly', '(4)'),
-        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(5)'),
-        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(6)'),
-        (r'Individual stocks\nQuote-midpoint returns', 'Daily', '(7)'),
-        (r'Individual stocks\nQuote-midpoint returns', 'Monthly', '(8)'),
-        (r'Industry\nportfolios', 'Daily', '(9)'),
-        (r'Industry\nportfolios', 'Daily', '(10)'),
-        (r'Industry\nportfolios', 'Daily', '(11)'),
-        (r'Industry\nportfolios', 'Monthly', '(12)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(1)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(2)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(3)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Monthly', '(4)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(5)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(6)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(7)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Monthly', '(8)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(9)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(10)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(11)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Monthly', '(12)'),
     ])
 
     table.columns = columns
-    table_latex = table.to_latex()
-    with open(OUTPUT_DIR / 'Table_2.tex', 'w') as f:
+    table_latex = table.to_latex(column_format='l' + 'c' * len(table.columns), 
+                                 multicolumn_format='c',
+                                 escape=False)
+    filename = 'Table_2_reproduce' if reproduce else 'Table_2'
+    with open(OUTPUT_DIR / (filename + '.tex'), 'w') as f:
         f.write(table_latex)
 
-    table.to_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
+    table.to_parquet(DATA_DIR / 'derived' / (filename + '.parquet'))
 
     return table
 
 
 
 if __name__ == "__main__":
+    # 2010
     reversal_ret = calc_reversal_strategy.load_reversal_return()
     reversal_ret.columns = ['trade', 'quote', 'industry']
     vix = load_vix.load_vix()
@@ -161,3 +180,12 @@ if __name__ == "__main__":
     data_m = prepare_data(reversal_ret, vix, rm, to_monthly=True)
 
     table = generate_table(data, data_m)
+
+    # 2023
+    reversal_ret = calc_reversal_strategy.load_reversal_return(reproduce=True)
+    reversal_ret.columns = ['trade', 'quote', 'industry']
+    
+    data = prepare_data(reversal_ret, vix, rm)
+    data_m = prepare_data(reversal_ret, vix, rm, to_monthly=True)
+
+    table = generate_table(data, data_m, reproduce=True)
