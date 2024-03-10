@@ -17,16 +17,14 @@ OUTPUT_DIR = Path(config.OUTPUT_DIR)
 import calc_reversal_strategy
 import load_vix
 
-import numpy as np
-import numpy as np
 def performance_summary(return_data, annualization = 252):
     """ 
-        Returns the Performance Stats for given set of returns
-        Inputs: 
-            return_data - DataFrame with Date index and Monthly Returns for different assets/strategies.
-        Output:
-            summary_stats - DataFrame with annualized mean return, vol, sharpe ratio. Skewness, Excess Kurtosis, Var (0.05) and
-                            CVaR (0.05) and drawdown based on monthly returns. 
+    Returns the Performance Stats for given set of returns
+    Inputs: 
+        return_data - DataFrame with Date index and Monthly Returns for different assets/strategies.
+    Output:
+        summary_stats - DataFrame with annualized mean return, vol, sharpe ratio. Skewness, Excess Kurtosis, Var (0.05) and
+                        CVaR (0.05) and drawdown based on monthly returns. 
     """
     summary_stats = return_data.mean().to_frame('Annualized Mean Return(%)').apply(lambda x: x*annualization)
     summary_stats['Annualzied Volatility(%)'] = return_data.std().apply(lambda x: x*np.sqrt(annualization))
@@ -41,7 +39,7 @@ def performance_summary(return_data, annualization = 252):
     previous_peaks = wealth_index.cummax()
     drawdowns = (wealth_index - previous_peaks)/previous_peaks
 
-    summary_stats['Max Drawdown(%)'] = drawdowns.min()
+    summary_stats['Max Drawdown(%)'] = drawdowns.min() * 100
     summary_stats = summary_stats.applymap('{:.2f}'.format)
     summary_stats['Peak'] = [previous_peaks[col][:drawdowns[col].idxmin()].idxmax() for col in previous_peaks.columns]
     summary_stats['Bottom'] = drawdowns.idxmin()
@@ -64,11 +62,6 @@ def performance_summary(return_data, annualization = 252):
     
     
     return summary_stats.T
-    
-    
-    return summary_stats.T
-
-
 
 
 if __name__ == "__main__":
