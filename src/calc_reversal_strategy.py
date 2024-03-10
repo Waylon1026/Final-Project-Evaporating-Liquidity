@@ -262,73 +262,73 @@ def demo():
 
 
 if __name__ == "__main__":
-#     ff = load_FF_industry.load_FF_industry_portfolio_daily(data_dir=DATA_DIR)[0]
-#     dfcp = clean_CRSP_stock.load_CRSP_closing_price(data_dir=DATA_DIR)
-#     dfmid = clean_CRSP_stock.load_CRSP_midpoint(data_dir=DATA_DIR)
+    ff = load_FF_industry.load_FF_industry_portfolio_daily(data_dir=DATA_DIR)[0]
+    dfcp = clean_CRSP_stock.load_CRSP_closing_price(data_dir=DATA_DIR)
+    dfmid = clean_CRSP_stock.load_CRSP_midpoint(data_dir=DATA_DIR)
 
-#     ff_2010 = ff[(ff.index >= '1998-01-01') & (ff.index <= '2010-12-31')]
-#     dfcp_2010 = dfcp[(dfcp['date'] >= '1998-01-01') & (dfcp['date'] <= '2010-12-31')]
-#     dfmid_2010 = dfmid[(dfmid['date'] >= '1998-01-01') & (dfmid['date'] <= '2010-12-31')]
-
-
-#     # Replicate Table 1A
-#     ret_industry = calc_reverse_strategy_industry(ff_2010)
-#     ret_transact = calc_reverse_strategy_individual(dfcp_2010)
-#     ret_midpoint = calc_reverse_strategy_individual(dfmid_2010, 'quote_midpoint_return')
-
-#     ret_raw = pd.concat([ret_transact, ret_midpoint, ret_industry], axis=1)
-#     ret_raw.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
-#     ret_raw.to_parquet(DATA_DIR / "derived" / "reversal_return_2010.parquet")
-
-#     ret_raw = load_reversal_return(data_dir=DATA_DIR)
-
-#     df_stat_A = summary_stats(ret_raw, reproduce=False)
-#     df_stat_A.to_parquet(DATA_DIR / "derived" / "Table_1A.parquet")
+    ff_2010 = ff[(ff.index >= '1998-01-01') & (ff.index <= '2010-12-31')]
+    dfcp_2010 = dfcp[(dfcp['date'] >= '1998-01-01') & (dfcp['date'] <= '2010-12-31')]
+    dfmid_2010 = dfmid[(dfmid['date'] >= '1998-01-01') & (dfmid['date'] <= '2010-12-31')]
 
 
-#     # Reproduce Table 1A
-#     ret_industry_new = calc_reverse_strategy_industry(ff)
-#     ret_transact_new = calc_reverse_strategy_individual(dfcp)
-#     ret_midpoint_new = calc_reverse_strategy_individual(dfmid, 'quote_midpoint_return')
+    # Replicate Table 1A
+    ret_industry = calc_reverse_strategy_industry(ff_2010)
+    ret_transact = calc_reverse_strategy_individual(dfcp_2010)
+    ret_midpoint = calc_reverse_strategy_individual(dfmid_2010, 'quote_midpoint_return')
 
-#     ret_raw_new = pd.concat([ret_transact_new, ret_midpoint_new, ret_industry_new], axis=1)
-#     ret_raw_new.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
-#     ret_raw_new.to_parquet(DATA_DIR / "derived" / "reversal_return_2023.parquet")
+    ret_raw = pd.concat([ret_transact, ret_midpoint, ret_industry], axis=1)
+    ret_raw.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
+    ret_raw.to_parquet(DATA_DIR / "derived" / "reversal_return_2010.parquet")
 
-#     ret_raw_new = load_reversal_return(data_dir=DATA_DIR, reproduce=True)
+    ret_raw = load_reversal_return(data_dir=DATA_DIR)
 
-#     df_stat_A_new = summary_stats(ret_raw_new, reproduce=True)
-#     df_stat_A_new.to_parquet(DATA_DIR / "derived" / "Table_1A_reproduce.parquet")
+    df_stat_A = summary_stats(ret_raw, reproduce=False)
+    df_stat_A.to_parquet(DATA_DIR / "derived" / "Table_1A.parquet")
 
 
-#     # Replicate Table 1B
-#     hedged_ret_transact = calc_hedged_return(ret_transact, reproduce=False)
-#     hedged_ret_midpoint = calc_hedged_return(ret_midpoint, reproduce=False)
-#     hedged_ret_industry = calc_hedged_return(ret_industry, reproduce=False)
+    # Reproduce Table 1A
+    ret_industry_new = calc_reverse_strategy_industry(ff)
+    ret_transact_new = calc_reverse_strategy_individual(dfcp)
+    ret_midpoint_new = calc_reverse_strategy_individual(dfmid, 'quote_midpoint_return')
 
-#     ret_hedged = pd.concat([hedged_ret_transact, hedged_ret_midpoint, hedged_ret_industry], axis=1)
-#     ret_hedged.columns = ['Hedged Transact. prices', 'Hedged Quote-midpoints', 'Hedged Industry portfolio']
-#     ret_hedged.to_parquet(DATA_DIR / "derived" / "reversal_return_hedged_2010.parquet")
+    ret_raw_new = pd.concat([ret_transact_new, ret_midpoint_new, ret_industry_new], axis=1)
+    ret_raw_new.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
+    ret_raw_new.to_parquet(DATA_DIR / "derived" / "reversal_return_2023.parquet")
 
-#     ret_hedged = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=False)
+    ret_raw_new = load_reversal_return(data_dir=DATA_DIR, reproduce=True)
+
+    df_stat_A_new = summary_stats(ret_raw_new, reproduce=True)
+    df_stat_A_new.to_parquet(DATA_DIR / "derived" / "Table_1A_reproduce.parquet")
+
+
+    # Replicate Table 1B
+    hedged_ret_transact = calc_hedged_return(ret_transact, reproduce=False)
+    hedged_ret_midpoint = calc_hedged_return(ret_midpoint, reproduce=False)
+    hedged_ret_industry = calc_hedged_return(ret_industry, reproduce=False)
+
+    ret_hedged = pd.concat([hedged_ret_transact, hedged_ret_midpoint, hedged_ret_industry], axis=1)
+    ret_hedged.columns = ['Hedged Transact. prices', 'Hedged Quote-midpoints', 'Hedged Industry portfolio']
+    ret_hedged.to_parquet(DATA_DIR / "derived" / "reversal_return_hedged_2010.parquet")
+
+    ret_hedged = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=False)
     
-#     df_stat_B = summary_stats(ret_hedged, reproduce=False)
-#     df_stat_B.to_parquet(DATA_DIR / "derived" / "Table_1B.parquet")
+    df_stat_B = summary_stats(ret_hedged, reproduce=False)
+    df_stat_B.to_parquet(DATA_DIR / "derived" / "Table_1B.parquet")
 
 
-#     # Reproduce Table 1B
-#     hedged_transact_new = calc_hedged_return(ret_transact_new, reproduce=True)
-#     hedged_midpoint_new = calc_hedged_return(ret_midpoint_new, reproduce=True)
-#     hedged_industry_new = calc_hedged_return(ret_industry_new, reproduce=True)
+    # Reproduce Table 1B
+    hedged_transact_new = calc_hedged_return(ret_transact_new, reproduce=True)
+    hedged_midpoint_new = calc_hedged_return(ret_midpoint_new, reproduce=True)
+    hedged_industry_new = calc_hedged_return(ret_industry_new, reproduce=True)
 
-#     ret_hedged_new = pd.concat([hedged_transact_new, hedged_midpoint_new, hedged_industry_new], axis=1)
-#     ret_hedged_new.columns = ['Hedged Transact. prices', 'Hedged Quote-midpoints', 'Hedged Industry portfolio']
-#     ret_hedged_new.to_parquet(DATA_DIR / "derived" / "reversal_return_hedged_2023.parquet")
+    ret_hedged_new = pd.concat([hedged_transact_new, hedged_midpoint_new, hedged_industry_new], axis=1)
+    ret_hedged_new.columns = ['Hedged Transact. prices', 'Hedged Quote-midpoints', 'Hedged Industry portfolio']
+    ret_hedged_new.to_parquet(DATA_DIR / "derived" / "reversal_return_hedged_2023.parquet")
 
-#     ret_hedged_new = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=True)
+    ret_hedged_new = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=True)
     
-#     df_stat_B_new = summary_stats(ret_hedged_new, reproduce=True)
-#     df_stat_B_new.to_parquet(DATA_DIR / "derived" / "Table_1B_reproduce.parquet")
+    df_stat_B_new = summary_stats(ret_hedged_new, reproduce=True)
+    df_stat_B_new.to_parquet(DATA_DIR / "derived" / "Table_1B_reproduce.parquet")
 
 
     # Latex table for Table_1 and Table_1_reproduce
