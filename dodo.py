@@ -29,7 +29,7 @@ def jupyter_clear_output(notebook):
     return f"jupyter nbconvert --ClearOutputPreprocessor.enabled=True --ClearMetadataPreprocessor.enabled=True --inplace ./src/{notebook}.ipynb"
 # fmt: on
 
-'''
+
 def get_os():
     os_name = platform.system()
     if os_name == "Windows":
@@ -42,7 +42,7 @@ def get_os():
         return "unknown"
     
 os_type = get_os()
-'''
+
 
 def copy_notebook_to_folder(notebook_stem, origin_folder, destination_folder):
     origin_path = Path(origin_folder) / f"{notebook_stem}.ipynb"
@@ -151,7 +151,7 @@ def task_replicate_table_1():
     file_output = ["reversal_return_2010.parquet", "reversal_return_2023.parquet", 
                    "Table_1A.parquet", "Table_1B.parquet", 
                    "Table_1A.parquet_reproduce", "Table_1B_reproduce.parquet"]
-    targets = [OUTPUT_DIR / file for file in file_output]
+    targets = [DATA_DIR / "derived" / file for file in file_output]
 
     return {
         "actions": [
@@ -159,6 +159,107 @@ def task_replicate_table_1():
             "ipython ./src/calc_reversal_strategy.py",
         ],
         "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
+    }
+
+def task_replicate_table_2():
+    """ 
+    Replicate Table 2: Predicting Reversal Strategy Returns with VIX
+    """
+    file_dep = ["./src/config.py", "./src/regression_hac.py"]
+    targets = [DATA_DIR / "derived/Table_2.parquet", OUTPUT_DIR / "Table_2.tex"]
+
+    return {
+        "actions": [
+            "ipython src/config.py",
+            "ipython ./src/regression_hac.py",
+        ],
+        "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
+    }
+
+def task_additional_analysis():
+    """ 
+    Generate additional analysis table and figure
+    """
+    file_dep = ["./src/config.py", "./src/additional_analysis.py"]
+    file_output = ["Additional_Table.tex", "reversal_strategy_and_vix.png"]
+    targets = [OUTPUT_DIR / file for file in file_output]
+
+    return {
+        "actions": [
+            "ipython src/config.py",
+            "ipython ./src/additional_analysis.py",
+        ],
+        "targets": targets,
+        "file_dep": file_dep,
+        "clean": True,
+    }
+
+
+
+def task_convert_notebooks_to_scripts():
+    """Preps the notebooks for presentation format.
+    Execute notebooks with summary stats and plots and remove metadata.
+    """
+    build_dir = Path(OUTPUT_DIR)
+    build_dir.mkdir(parents=True, exist_ok=True)
+
+    notebooks = [
+        "notebook.ipynb",
+    ]
+    file_dep = [Path("./src") / file for file in notebooks]
+    stems = [notebook.split(".")[0] for notebook in notebooks]
+    targets = [build_dir / f"_{stem}.py" for stem in stems]
+
+    actions = [
+        # *[jupyter_execute_notebook(notebook) for notebook in notebooks_to_run],
+        # *[jupyter_to_html(notebook) for notebook in notebooks_to_run],
+        *[jupyter_clear_output(notebook) for notebook in stems],
+        *[jupyter_to_python(notebook, build_dir) for notebook in stems],
+    ]
+    return {
+        "actions": actions,
+        "targets": targets,
+        "task_dep": [],
+        "file_dep": file_dep,
+        "clean": True,
+    }
+
+
+def task_run_notebooks():
+    """Preps the notebooks for presentation format.
+    Execute notebooks with summary stats and plots and remove metadata.
+    """
+    notebooks = [
+        "notebook.ipynb",
+    ]
+    stems = [notebook.split(".")[0] for notebook in notebooks]
+
+    file_dep = [
+        # 'load_other_data.py',
+        *[Path(OUTPUT_DIR) / f"_{stem}.py" for stem in stems],
+    ]
+
+    targets = [
+        ## Notebooks converted to HTML
+        *[OUTPUT_DIR / f"{stem}.html" for stem in stems],
+    ]
+
+    actions = [
+        *[jupyter_execute_notebook(notebook) for notebook in stems],
+        *[jupyter_to_html(notebook) for notebook in stems],
+        *[copy_notebook_to_folder(notebook, Path("./src"), OUTPUT_DIR) for notebook in stems],
+        *[copy_notebook_to_folder(notebook, Path("./src"), "./docs") for notebook in stems],
+        *[jupyter_clear_output(notebook) for notebook in stems],
+        # *[jupyter_to_python(notebook, build_dir) for notebook in notebooks_to_run],
+    ]
+    return {
+        "actions": actions,
+        "targets": targets,
+        "task_dep": [],
         "file_dep": file_dep,
         "clean": True,
     }
@@ -181,74 +282,11 @@ def task_example_plot():
     }
 
 
-def task_convert_notebooks_to_scripts():
-    """Preps the notebooks for presentation format.
-    Execute notebooks with summary stats and plots and remove metadata.
-    """
-    build_dir = Path(OUTPUT_DIR)
-    build_dir.mkdir(parents=True, exist_ok=True)
 
-    notebooks = [
-        "01_example_notebook.ipynb",
-        "02_interactive_plot_example.ipynb",
-    ]
-    file_dep = [Path("./src") / file for file in notebooks]
-    stems = [notebook.split(".")[0] for notebook in notebooks]
-    targets = [build_dir / f"_{stem}.py" for stem in stems]
-
-    actions = [
-        # *[jupyter_execute_notebook(notebook) for notebook in notebooks_to_run],
-        # *[jupyter_to_html(notebook) for notebook in notebooks_to_run],
-        *[jupyter_clear_output(notebook) for notebook in stems],
-        *[jupyter_to_python(notebook, build_dir) for notebook in stems],
-    ]
-    return {
-        "actions": actions,
-        "targets": targets,
-        "task_dep": [],
-        "file_dep": file_dep,
-        "clean": True,
-    }
 '''
 
 '''
-def task_run_notebooks():
-    """Preps the notebooks for presentation format.
-    Execute notebooks with summary stats and plots and remove metadata.
-    """
-    notebooks = [
-        "01_example_notebook.ipynb",
-        "02_interactive_plot_example.ipynb",
-    ]
-    stems = [notebook.split(".")[0] for notebook in notebooks]
 
-    file_dep = [
-        # 'load_other_data.py',
-        *[Path(OUTPUT_DIR) / f"_{stem}.py" for stem in stems],
-    ]
-
-    targets = [
-        ## 01_example_notebook.ipynb output
-        OUTPUT_DIR / "sine_graph.png",
-        ## Notebooks converted to HTML
-        *[OUTPUT_DIR / f"{stem}.html" for stem in stems],
-    ]
-
-    actions = [
-        *[jupyter_execute_notebook(notebook) for notebook in stems],
-        *[jupyter_to_html(notebook) for notebook in stems],
-        *[copy_notebook_to_folder(notebook, Path("./src"), OUTPUT_DIR) for notebook in stems],
-        *[copy_notebook_to_folder(notebook, Path("./src"), "./docs") for notebook in stems],
-        *[jupyter_clear_output(notebook) for notebook in stems],
-        # *[jupyter_to_python(notebook, build_dir) for notebook in notebooks_to_run],
-    ]
-    return {
-        "actions": actions,
-        "targets": targets,
-        "task_dep": [],
-        "file_dep": file_dep,
-        "clean": True,
-    }
 '''
 
 # def task_knit_RMarkdown_files():
