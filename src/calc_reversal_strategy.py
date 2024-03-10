@@ -1,3 +1,10 @@
+"""
+This module constructs the reversal strategy for individual stocks and industry portfolios,
+calculates the reversal strategy returns, and calculates the summary statistics of the reversal strategy returns.
+
+The data is needed to replicate and reproduce Table 1 and Table 2 in the paper, as well as to do other analysis.
+"""
+
 import pandas as pd
 import pandas_datareader
 import statsmodels.api as sm
@@ -17,6 +24,10 @@ import clean_CRSP_stock
 
 
 def calc_reverse_strategy_ret(df, type_col='industry', ret_col='ret'):
+    """
+    Calculate the reversal strategy return as the average of 
+    the past 5 days' reversal strategy returns
+    """
     df['ret-avg'] = df.groupby('date')[ret_col].transform(lambda x: x - x.mean())
     df['w'] = df.groupby('date')['ret-avg'].transform(lambda x: - x / (0.5 * x.abs().sum()))
 
@@ -29,6 +40,9 @@ def calc_reverse_strategy_ret(df, type_col='industry', ret_col='ret'):
 
 
 def calc_reverse_strategy_industry(df, start=START_DATE, end=END_DATE):
+    """
+    Calculate the reversal strategy return for industry portfolios
+    """
     df = df.unstack().reset_index()
     df.columns = ["industry", "date", "ret"]
 
@@ -37,6 +51,12 @@ def calc_reverse_strategy_industry(df, start=START_DATE, end=END_DATE):
 
 
 def calc_reverse_strategy_individual(df, ret_col='retx', start=START_DATE, end=END_DATE):
+    """
+    Calculate the reversal strategy return for individual stocks
+    Args:
+        - df: dataframe containing individual stock returns
+        - ret_col: column name of the return
+    """
     df[ret_col] *= 100
 
     rev_ret = calc_reverse_strategy_ret(df, 'permno', ret_col)
@@ -44,7 +64,9 @@ def calc_reverse_strategy_individual(df, ret_col='retx', start=START_DATE, end=E
 
 
 def calc_beta(factor, fund_ret, constant = True):
-
+    """
+    Calculate beta of fund returns on a factor
+    """
     if constant:
         X = sm.tools.add_constant(factor)
     else:
@@ -63,7 +85,9 @@ def calc_beta(factor, fund_ret, constant = True):
 
 
 def calc_multiple_beta(factor, fund_ret, constant = True):
-
+    """
+    Calculate a series of beta of fund returns on multiple factors
+    """
     if constant:
         X = sm.tools.add_constant(factor)
     else:
@@ -82,7 +106,9 @@ def calc_multiple_beta(factor, fund_ret, constant = True):
 
 
 def calc_hedged_return(ret, reproduce=False):
-    
+    """
+    Calculate returns of hedged reversal strategy
+    """
     index = load_CRSP_stock.load_CRSP_index_files(data_dir=DATA_DIR)
     if reproduce:
         index = index[index['caldt'] <= '2023-12-31']
@@ -103,6 +129,10 @@ def calc_hedged_return(ret, reproduce=False):
 
 
 def summary_stats(df, reproduce=False):
+    """
+    Calculate summary statistics of reversal strategy returns for Table 1 replication and reproduction
+    - reproduce: whether to calculate the statistics for reproduction
+    """
     stats = df.mean().to_frame('Mean return(% per day)')
     stats['Std.dev.(% per day)'] = df.std()
     stats['Skewness'] = df.skew()
@@ -126,7 +156,7 @@ def summary_stats(df, reproduce=False):
 
 def load_reversal_return(data_dir=DATA_DIR, hedged=False, reproduce=False):
     """
-    Load reversal strategy returns
+    Load reversal strategy returns for replication and reproduction
 
     Args:
         - hedged: whether to load hedged returns
@@ -148,6 +178,7 @@ def load_reversal_return(data_dir=DATA_DIR, hedged=False, reproduce=False):
 def load_Table_1A(data_dir=DATA_DIR, reproduce=False):
     """
     Load Table 1A: Summary Statistics of Reversal Strategy Returns
+    - reproduce: whether to load the statistics for reproduction
     """
     if reproduce:
         path = Path(data_dir) / "derived" / "Table_1A_reproduce.parquet"
@@ -161,6 +192,7 @@ def load_Table_1A(data_dir=DATA_DIR, reproduce=False):
 def load_Table_1B(data_dir=DATA_DIR, reproduce=False):
     """
     Load Table 1B: Summary Statistics of Hedged Reversal Strategy Returns
+    - reproduce: whether to load the statistics for reproduction
     """
     if reproduce:
         path = Path(data_dir) / "derived" / "Table_1B_reproduce.parquet"
@@ -202,7 +234,6 @@ if __name__ == "__main__":
     ret_raw = load_reversal_return(data_dir=DATA_DIR)
 
     df_stat_A = summary_stats(ret_raw, reproduce=False)
-    # df_stat_A = df_stat_A.style.format('{:.2f}',na_rep='')
     df_stat_A.to_parquet(DATA_DIR / "derived" / "Table_1A.parquet")
 
 
@@ -215,8 +246,9 @@ if __name__ == "__main__":
     ret_raw_new.columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
     ret_raw_new.to_parquet(DATA_DIR / "derived" / "reversal_return_2023.parquet")
 
+    ret_raw_new = load_reversal_return(data_dir=DATA_DIR, reproduce=True)
+
     df_stat_A_new = summary_stats(ret_raw_new, reproduce=True)
-    # df_stat_A_new = df_stat_A_new.style.format('{:.2f}',na_rep='')
     df_stat_A_new.to_parquet(DATA_DIR / "derived" / "Table_1A_reproduce.parquet")
 
 
@@ -232,7 +264,6 @@ if __name__ == "__main__":
     ret_hedged = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=False)
     
     df_stat_B = summary_stats(ret_hedged, reproduce=False)
-    # df_stat_B = df_stat_B.style.format('{:.2f}',na_rep='')
     df_stat_B.to_parquet(DATA_DIR / "derived" / "Table_1B.parquet")
 
 
@@ -248,5 +279,4 @@ if __name__ == "__main__":
     ret_hedged_new = load_reversal_return(data_dir=DATA_DIR, hedged=True, reproduce=True)
     
     df_stat_B_new = summary_stats(ret_hedged_new, reproduce=True)
-    # df_stat_B_new = df_stat_B_new.style.format('{:.2f}',na_rep='')
     df_stat_B_new.to_parquet(DATA_DIR / "derived" / "Table_1B_reproduce.parquet")
