@@ -80,6 +80,9 @@ def load_CRSP_daily_file(data_dir=DATA_DIR):
 def pull_CRSP_index_files(
     start_date=START_DATE, end_date=END_DATE, wrds_username=WRDS_USERNAME
 ):
+    """
+    Pulls CRSP index files from a specified start date to end date.
+    """
     # Pull index files
     query = f"""
         SELECT * 
@@ -95,6 +98,9 @@ def pull_CRSP_index_files(
 
 
 def load_CRSP_index_files(data_dir=DATA_DIR):
+    """
+    Load CRSP index files
+    """
     path = Path(data_dir) / "pulled" / f"CRSP_DSIX.parquet"
     df = pd.read_parquet(path)
     return df

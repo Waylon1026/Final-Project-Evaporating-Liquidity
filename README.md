@@ -3,7 +3,9 @@ Evaporating Liquidity
 
 # About this project
 
-TODO
+In this project, we replicate tables from the paper "Evaporating Liquidity" by Stefan Nagel using the Principals of Reproducible Analytical Pipelines (RAPs) learned in the class. 
+
+Our replication is automated from end-to-end using Pydoit, formatted using the project template (blank_project) provided by professor Bejarano, which is based on the Cookiecutter Data Science template.
 
 # Task List
 
@@ -24,9 +26,9 @@ TODO
     - make commits to repo; pull requests
     - docstring of python file and python function
   
-- Other summary statistics tables and charts outside replication: TBD
+- Other summary statistics tables and charts outside replication: Ruilong Guo
 - Data cleaning (Tidy data set): Everyone
-- PyDoit (dodo.py): TBD
+- PyDoit (dodo.py): Sifei Zhao
 
 
 # General Directory Structure
