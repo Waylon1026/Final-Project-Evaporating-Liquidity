@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import config
 import calc_reversal_strategy
+from pandas.testing import assert_frame_equal
 
 DATA_DIR = config.DATA_DIR
 
@@ -10,7 +11,10 @@ Test whether the table is formatted correctly
 - column and index names
 - dimension size
 """
-def test_format(df_raw, df_hedge):
+def test_format():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     expected_index = ['Mean return(% per day)', 'Std.dev.(% per day)','Skewness', 'Kurtosis', 'Worst day return(%)',
                         'Worst 3-month return(%)', 'Beta', 'Annualized Sharpe Ratio']
     expected_columns = ['Transact. prices', 'Quote-midpoints', 'Industry portfolio']
@@ -26,7 +30,10 @@ def test_format(df_raw, df_hedge):
 """
 Test Mean Return
 """
-def test_mean_return(df_raw, df_hedge):
+def test_mean_return():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     mean_return_raw = df_raw.loc['Mean return(% per day)'].astype(float)
     mean_return_hedge = df_hedge.loc['Mean return(% per day)'].astype(float)
     
@@ -39,7 +46,10 @@ def test_mean_return(df_raw, df_hedge):
 """
 Test standard deviation
 """
-def test_std_dev(df_raw, df_hedge):
+def test_std_dev():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     std_dev_raw = df_raw.loc['Std.dev.(% per day)'].astype(float)
     std_dev_hedge = df_hedge.loc['Std.dev.(% per day)'].astype(float)
     
@@ -52,7 +62,10 @@ def test_std_dev(df_raw, df_hedge):
 """
 Test skewness
 """
-def test_skewness(df_raw, df_hedge):
+def test_skewness():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     skewness_raw = df_raw.loc['Skewness'].astype(float)
     skewness_hedge = df_hedge.loc['Skewness'].astype(float)
     
@@ -65,7 +78,10 @@ def test_skewness(df_raw, df_hedge):
 """
 Test kurtosis
 """
-def test_kurtosis(df_raw, df_hedge):
+def test_kurtosis():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     kurtosis_raw = df_raw.loc['Kurtosis'].astype(float)
     kurtosis_hedge = df_hedge.loc['Kurtosis'].astype(float)
     
@@ -79,7 +95,10 @@ def test_kurtosis(df_raw, df_hedge):
 """
 test Beta
 """
-def test_beta(df_raw, df_hedge):
+def test_beta():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     beta_raw = df_raw.loc['Beta'].astype(float)
     beta_hedge = df_hedge.loc['Beta'].astype(float)
     
@@ -92,7 +111,10 @@ def test_beta(df_raw, df_hedge):
 """
 tes annualized sharpe ratio
 """
-def test_annualized_sharpe_ratio(df_raw, df_hedge):
+def test_annualized_sharpe_ratio():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     sharpe_ratio_raw = df_raw.loc['Annualized Sharpe Ratio'].astype(float)
     sharpe_ratio_hedge = df_hedge.loc['Annualized Sharpe Ratio'].astype(float)
     
@@ -105,7 +127,10 @@ def test_annualized_sharpe_ratio(df_raw, df_hedge):
 """
 test worst day return
 """
-def test_worst_day_return(df_raw, df_hedge):
+def test_worst_day_return():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     worst_day_return_raw = df_raw.loc['Worst day return(%)'].astype(float)
     worst_day_return_hedge = df_hedge.loc['Worst day return(%)'].astype(float)
     
@@ -118,7 +143,10 @@ def test_worst_day_return(df_raw, df_hedge):
 """
 worst 3-month return
 """
-def test_worst_3_month_return(df_raw, df_hedge):
+def test_worst_3_month_return():
+    df_raw = calc_reversal_strategy.load_Table_1A()
+    df_hedge = calc_reversal_strategy.load_Table_1B()
+
     worst_3_month_return_raw = df_raw.loc['Worst 3-month return(%)'].astype(float)
     worst_3_month_return_hedge = df_hedge.loc['Worst 3-month return(%)'].astype(float)
     
@@ -130,33 +158,33 @@ def test_worst_3_month_return(df_raw, df_hedge):
 
 
 
-if __name__ == '__main__':
-    df_raw = calc_reversal_strategy.load_Table_1A()
-    df_hedge = calc_reversal_strategy.load_Table_1B()
+# if __name__ == '__main__':
+#     df_raw = calc_reversal_strategy.load_Table_1A()
+#     df_hedge = calc_reversal_strategy.load_Table_1B()
 
-    # test format
-    test_format(df_raw, df_hedge)
+#     # test format
+#     test_format(df_raw, df_hedge)
 
-    # test mean return
-    test_mean_return(df_raw, df_hedge)
+#     # test mean return
+#     test_mean_return(df_raw, df_hedge)
 
-    # test standard deviation
-    test_std_dev(df_raw, df_hedge)
+#     # test standard deviation
+#     test_std_dev(df_raw, df_hedge)
 
-    # test beta
-    test_beta(df_raw, df_hedge)
+#     # test beta
+#     test_beta(df_raw, df_hedge)
 
-    # test annualized sharpe ratio
-    test_annualized_sharpe_ratio(df_raw, df_hedge)
+#     # test annualized sharpe ratio
+#     test_annualized_sharpe_ratio(df_raw, df_hedge)
 
-    # test worst day return
-    test_worst_day_return(df_raw, df_hedge)
+#     # test worst day return
+#     test_worst_day_return(df_raw, df_hedge)
 
-    # test worst 3-month return
-    test_worst_3_month_return(df_raw, df_hedge)
+#     # test worst 3-month return
+#     test_worst_3_month_return(df_raw, df_hedge)
 
-    # test skewness
-    test_skewness(df_raw, df_hedge)
+#     # test skewness
+#     test_skewness(df_raw, df_hedge)
 
-    # test kurtosis
-    test_kurtosis(df_raw, df_hedge)
+#     # test kurtosis
+#     test_kurtosis(df_raw, df_hedge)

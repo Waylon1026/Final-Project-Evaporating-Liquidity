@@ -17,24 +17,26 @@ import config
 DATA_DIR = config.DATA_DIR
 
 
-def test_table_formatting(data):
+def test_table_formatting():
     """
     Test whether the table is formatted correctly
     """
+    data = pd.read_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
+
     expected_index = ['Intercept', '', 'VIX', '', 'Pre-decim.', '', '$R_M$', '', 'Adj. $R^2$']
     expected_columns = [
-            ('Individual stocks\\nTransaction-price returns',   'Daily', '(1)'),
-            ('Individual stocks\\nTransaction-price returns',   'Daily', '(2)'),
-            ('Individual stocks\\nTransaction-price returns',   'Daily', '(3)'),
-            ('Individual stocks\\nTransaction-price returns', 'Monthly', '(4)'),
-            (   'Individual stocks\\nQuote-midpoint returns',   'Daily', '(5)'),
-            (   'Individual stocks\\nQuote-midpoint returns',   'Daily', '(6)'),
-            (   'Individual stocks\\nQuote-midpoint returns',   'Daily', '(7)'),
-            (   'Individual stocks\\nQuote-midpoint returns', 'Monthly', '(8)'),
-            (                        'Industry\\nportfolios',   'Daily', '(9)'),
-            (                        'Industry\\nportfolios',   'Daily', '(10)'),
-            (                        'Industry\\nportfolios',   'Daily', '(11)'),
-            (                        'Industry\\nportfolios', 'Monthly', '(12)'),
+            ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(1)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(2)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Daily', '(3)'),
+        ('\\makecell{Individual stocks\\\\Transaction-price returns}', 'Monthly', '(4)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(5)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(6)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Daily', '(7)'),
+        ('\\makecell{Individual stocks\\\\Quote-midpoint returns}', 'Monthly', '(8)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(9)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(10)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Daily', '(11)'),
+        ('\\makecell{Industry\\\\portfolios}', 'Monthly', '(12)'),
     ]
 
     assert data.shape == (9, 12)
@@ -42,13 +44,14 @@ def test_table_formatting(data):
     assert data.columns.tolist() == expected_columns
 
 
-def test_coef_sign(data):
+def test_coef_sign():
     """
     Test whether the coefficients have the expected sign within 1 standard error
 
     For intercept, no test is performed.
     Ambiguous signs are marked with 1 or -1. Otherwise, the expected sign is marked with 2.
     """
+    data = pd.read_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
     expected_vix_sign = np.ones(12) * 2
     expected_g_sign = np.array([2, 2, 2, 2, 2, 2, 1, 1, 1])
     expected_rm_sign = np.array([-2, -1, -2, -1, -2, -1])
@@ -82,7 +85,7 @@ def test_coef_sign(data):
 
 
 
-def test_coef_r2(data):
+def test_coef_r2():
     """
     Test whether the results match the expected results within a certain tolerance
 
@@ -98,6 +101,7 @@ def test_coef_r2(data):
     #                          0.03, 0.03, 0.03, 0.02,
     #                          0.02, 0.02, 0.02, 0.01])
 
+    data = pd.read_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
     multiplier = 3
     
     expected_vix_coefs = np.array([0.22, 0.20, 0.18, 0.15, 
@@ -146,9 +150,9 @@ def test_coef_r2(data):
 
 
 
-if __name__ == '__main__':
-    table = pd.read_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
+# if __name__ == '__main__':
+#     table = pd.read_parquet(DATA_DIR / 'derived' / 'Table_2.parquet')
 
-    test_table_formatting(table)
-    test_coef_sign(table)
-    test_coef_r2(table)
+#     test_table_formatting(table)
+#     test_coef_sign(table)
+#     test_coef_r2(table)
