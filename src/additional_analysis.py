@@ -1,3 +1,9 @@
+"""
+This module is used to generate additional analysis for the reversal strategy outside of replication. 
+It generates a table with performance statistics for the reversal strategy and the CRSP value-weighted index. 
+It also generates a plot of the reversal strategy vs. the VIX index.
+"""
+
 import pandas as pd
 import numpy as np
 import pandas_datareader

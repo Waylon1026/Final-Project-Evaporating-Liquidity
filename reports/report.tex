@@ -59,6 +59,44 @@ This project replicates these two tables using the same sample range as the orig
 paper (from January 1998 to December 2010). We also provide the updated tables using
 data from January 1998 to December 2023.
 \section{Data Description}
+CRSP provides comprehensive historical data on stocks and indexes traded on U.S. exchanges, 
+including NYSE, AMEX, and Nasdaq. In the project, CRSP daily stock data is pulled for 
+constructing individual stock portfolios based on reversal strategy. Additionally, CRSP also 
+provides daily index data, including indexes like CRSP value-weighted index, which is used 
+to evaluate the performance of reversal strategy portfolios.
+
+Fama/French Data Library database, created by Eugene Fama and Kenneth French, provides various 
+financial data widely used in academic and investment research. The project pulls daily 
+returns of 48 industry portfolios constructed based on Fama and French (1997) classification
+from Fama/French Data Library database. The data is used to construct industry portfolios based
+on reversal strategy.
+
+FRED is a comprehensive source of economic data provided by the Federal Reserve Bank of St. Louis.
+The project pulls the CBOE Volatility Index (VIX) data from FRED, which is used as a predictor 
+variable in the predictive regression.
+
+
+\section{Success and Challenges}
+
+The main challenge of the project is the data collection and processing. The original paper uses 
+CRSP daily stock data and Fama/French Data Library database to construct individual stock and 
+industry portfolios based on reversal strategy. The project needs to pull the data from these two 
+databases and process the data to construct the portfolios. The project also needs to pull the 
+VIX data from FRED to use as a predictor variable in the predictive regression. The data collection 
+and processing are time consuming and require careful attention to details.
+
+While using GitHub to manage the project, the challenges are that the team members need to be pay 
+attention to version control and the project needs to be well-organized to avoid conflicts. The
+project also needs to be well-documented and well-tested to ensure the robustness of the results.
+
+Since the team members can easily track the changes and collaborate well on the project, 
+the project is well-organized and the team members are able to work efficiently. The project 
+successfully overcomes the challenges and completes the replication. The results are consistent 
+with the original paper, which further verifies the robustness of the original paper. The project 
+also provides the updated tables using data from January 1998 to December 2023, which provides 
+more recent evidence on the predictability of reversal strategy returns by the VIX index.
+
+
 
 \begin{landscape}
 \begin{table}
