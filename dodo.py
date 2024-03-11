@@ -265,86 +265,25 @@ def task_run_notebooks():
     }
 
 
-'''
-def task_example_plot():
-    """Example plots"""
-    file_dep = [Path("./src") / file for file in ["example_plot.py", "load_fred.py"]]
-    file_output = ["example_plot.png"]
-    targets = [OUTPUT_DIR / file for file in file_output]
-
-    return {
-        "actions": [
-            "ipython ./src/example_plot.py",
-        ],
-        "targets": targets,
-        "file_dep": file_dep,
-        "clean": True,
-    }
 
 
-
-'''
-
-'''
-
-'''
-
-# def task_knit_RMarkdown_files():
-#     """Preps the RMarkdown files for presentation format.
-#     This will knit the RMarkdown files for easier sharing of results.
-#     """
-#     files_to_knit = [
-#         'shift_share.Rmd',
-#         ]
-
-#     files_to_knit_stems = [file.split('.')[0] for file in files_to_knit]
-
-#     file_dep = [
-#         'load_performance_and_loan_merged.py',
-#         *[file + ".Rmd" for file in files_to_knit_stems],
-#         ]
-
-#     file_output = [file + '.html' for file in files_to_knit_stems]
-#     targets = [OUTPUT_DIR / file for file in file_output]
-
-#     def knit_string(file):
-#         return f"""Rscript -e 'library(rmarkdown); rmarkdown::render("{file}.Rmd", output_format="html_document", OUTPUT_DIR="../output/")'"""
-#     actions = [knit_string(file) for file in files_to_knit_stems]
-#     return {
-#         "actions": [
-#                     "module use -a /opt/aws_opt/Modulefiles",
-#                     "module load R/4.2.2",
-#                     *actions],
-#         "targets": targets,
-#         'task_dep':[],
-#         "file_dep": file_dep,
-#     }
-
-'''
 def task_compile_latex_docs():
-    """Example plots"""
+    """compile the latex documents to pdfs."""
     file_dep = [
-        "./reports/report_example.tex",
-        "./reports/slides_example.tex",
-        "./src/example_plot.py",
-        "./src/example_table.py",
+        "./reports/report.tex",
     ]
     file_output = [
-        "./reports/report_example.pdf",
-        "./reports/slides_example.pdf",
+        "./reports/report.pdf",
     ]
     targets = [file for file in file_output]
 
     return {
         "actions": [
-            "latexmk -xelatex -cd ./reports/report_example.tex",  # Compile
-            "latexmk -xelatex -c -cd ./reports/report_example.tex",  # Clean
-            "latexmk -xelatex -cd ./reports/slides_example.tex",  # Compile
-            "latexmk -xelatex -c -cd ./reports/slides_example.tex",  # Clean
+            "latexmk -xelatex -cd ./reports/report.tex",  # Compile
+            "latexmk -xelatex -c -cd ./reports/report.tex",  # Clean
             # "latexmk -CA -cd ../reports/",
         ],
         "targets": targets,
         "file_dep": file_dep,
         "clean": True,
     }
-'''
