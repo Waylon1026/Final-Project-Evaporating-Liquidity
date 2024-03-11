@@ -174,52 +174,62 @@ The replicated table has been verified that coefficients of relicated result are
 
 \section{Additional Analysis}
 
-Apart from the original statistical analysis of reversal strategy provided by 
-the paper, we create a new version of performance matrix which includes VaR(0.05), 
-CVaR(0.05), max drawdown, and other drawdown-based strategy perfomance, and we also 
-add CRSP value weighted index as the benchmark to evaluate the performance of reversal strategies. 
-The metrics are shown in Table 3.
+\begin{landscape}
+    \begin{table}
+        \centering
+        \caption*{Table 3: Additional Summary Statistics of Reversal Strategy Returns}
+    
+        \raggedright
+        
+        \small 
+        Apart from the original statistical analysis of reversal strategy provided by 
+        the paper, we create a new version of performance matrix which includes VaR(0.05), 
+        CVaR(0.05), max drawdown, and other drawdown-based strategy perfomance, and we also 
+        add CRSP value weighted index as the benchmark to evaluate the performance of reversal strategies. 
+    
+        Compared to the CRSP value weighted index, the reversal strategy based on individual 
+        stocks tends to have much higher annualized mean return and lower annualized volatility, 
+        which cause a way higher annualized sharpe ratio. The mean return of industry reversal 
+        strategy is a little bit lower than the banchmark, but it has lower volatility 
+        with higher sharpe ratio.
+    
+        With regard to max drawdown, the transact price based individual reversal strategy 
+        is the best(-4.38\%) among all the reversal strategies(quote-midpoints: -7.70\%, 
+        industry: -13.90\%) and the CRSP index(-57.18\%). That strategy dropped form the 
+        peak on 2009-10-22 after the period of financial crisis. And it only used 7 days to 
+        recover the lose since the peak, while the industry reversal strategy took 433 days 
+        to recover and CRSP value weighted index didn't recover to the peak.
+        \medskip
+    
+        \centering
+        \input{\PathToOutput/Additional_Table.tex}
+    \end{table}
+    
+    
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{\PathToOutput/reversal_strategy_vix.png}
+        \caption{Reversal Strategy and VIX}
+    
+        \raggedright
+        
+        \small 
+        This figure shows the three-month moving average return of the reversal strategy 
+        and VIX index across 1998 to 2010. The blue curve(VIX index) has a pre-trend of 
+        the red curve(3-month MA return of reversal strategy), which presents a key finding 
+        of the paper that the VIX index has a power to predict the reversal strategy return.
+        During the LTCM crisis in 1998 and  Nasdaq decline in 2000, the reversal strategy 
+        return increased with VIX increasing. From then until 2007, returns declined steadily
+        to less than 0.2\% per day, but during the financial crisis, they surged, surpassing 
+        levels seen during the LTCM crisis. The figure illustrates a strong correlation 
+        between the time variation in the reversal strategy's return and the VIX index. 
+        Since the financial crisis began in 2007, the returns of the reversal strategy 
+        and the VIX have closely tracked each other.
+        \medskip
+    \end{figure}
+\end{landscape}
 
-Compared to the CRSP value weighted index, the reversal strategy based on individual 
-stocks tends to have much higher annualized mean return and lower annualized volatility, 
-which cause a way higher annualized sharpe ratio. The mean return of industry reversal 
-strategy is a little bit lower than the banchmark, but it has lower volatility 
-with higher sharpe ratio.
-
-With regard to max drawdown, the transact price based individual reversal strategy 
-is the best(-4.38\%) among all the reversal strategies(quote-midpoints: -7.70\%, 
-industry: -13.90\%) and the CRSP index(-57.18\%). That strategy dropped form the 
-peak on 2009-10-22 after the period of financial crisis. And it only used 7 days to 
-recover the lose since the peak, while the industry reversal strategy took 433 days 
-to recover and CRSP value weighted index didn't recover to the peak.
-
-\begin{table}[h!]
-    \centering
-    \caption*{Table 3: Additional Summary Statistics of Reversal Strategy Returns}
-
-    \scriptsize
-    \input{\PathToOutput/Additional_Table.tex}
-\end{table}
-
-
-Figure 1 shows the three-month moving average return of the reversal strategy 
-and VIX index across 1998 to 2010. The blue curve(VIX index) has a pre-trend of 
-the red curve(3-month MA return of reversal strategy), which presents a key finding 
-of the paper that the VIX index has a power to predict the reversal strategy return.
-
-During the LTCM crisis in 1998 and  Nasdaq decline in 2000, the reversal strategy 
-return increased with VIX increasing. From then until 2007, returns declined steadily
-to less than 0.2\% per day, but during the financial crisis, they surged, surpassing 
-levels seen during the LTCM crisis. The figure illustrates a strong correlation 
-between the time variation in the reversal strategy's return and the VIX index. 
-Since the financial crisis began in 2007, the returns of the reversal strategy 
-and the VIX have closely tracked each other.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{\PathToOutput/reversal_strategy_vix.png}
-    \caption{Reversal Strategy and VIX}
-\end{figure}
 
 
 
