@@ -1,6 +1,8 @@
 '''
 @Author: Zhiyuan Liu
 @Date: 2024-02-21
+
+This module is used to load VIX data from FRED and save it to local file.
 '''
 
 import pandas as pd

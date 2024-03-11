@@ -1,3 +1,7 @@
+"""
+The module includes unit tests to ensure that numbers in replicated Table 1 match the paper’s within tolerance
+"""
+
 import pandas as pd
 import numpy as np
 import config
@@ -93,7 +97,7 @@ def test_kurtosis():
 
 
 """
-test Beta
+Test Beta
 """
 def test_beta():
     df_raw = calc_reversal_strategy.load_Table_1A()
@@ -109,7 +113,7 @@ def test_beta():
     assert np.allclose(beta_hedge, expected_beta_hedge, atol=0)
 
 """
-tes annualized sharpe ratio
+Test annualized sharpe ratio
 """
 def test_annualized_sharpe_ratio():
     df_raw = calc_reversal_strategy.load_Table_1A()
@@ -125,7 +129,7 @@ def test_annualized_sharpe_ratio():
     assert np.allclose(sharpe_ratio_hedge, expected_sharpe_ratio_hedge, rtol=0.2)
 
 """
-test worst day return
+Test worst day return
 """
 def test_worst_day_return():
     df_raw = calc_reversal_strategy.load_Table_1A()
@@ -141,7 +145,7 @@ def test_worst_day_return():
     assert np.allclose(worst_day_return_hedge, expected_worst_day_return_hedge, rtol=0.4)
 
 """
-worst 3-month return
+Test worst 3-month return
 """
 def test_worst_3_month_return():
     df_raw = calc_reversal_strategy.load_Table_1A()
